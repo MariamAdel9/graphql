@@ -13,7 +13,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   try {
     const token = await signin(id, password);
     localStorage.setItem("jwt", token);
-    location.href = "profile.html";
+    location.href = "index.html";
   } catch (err) {
     error.textContent = "Invalid username/email or password";
   }
@@ -53,3 +53,4 @@ function logout() {
   localStorage.removeItem("jwt");
   location.href = "login.html";
 }
+
