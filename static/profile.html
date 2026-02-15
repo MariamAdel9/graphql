@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Profile</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="overlay">
+      <div class="topbar">
+        <div class="title">
+          <h1 class="gradientFont" id="userLogin">loading . . .</h1>
+          <p class="glow-text">Hope you are doing well today !</p>
+        </div>
+
+        <div class="chips">
+          <p class="glow-text" style="text-transform: uppercase">
+            Since you joined Rebbot !
+          </p>
+          <div class="chip" id="totalXp"><span class="dot"></span> ...</div>
+          <div class="chip" id="passFail">...</div>
+          <div class="dream-btn" onclick="logout()">Logout</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- <div class="hero-card">mariam</div> -->
+
+        <div class="col">
+          <div class="card box" id="auditWidget">
+            <h3 class="glow-text">Audit Ratio</h3>
+
+            <div class="ringWrap">
+              <div class="ring" id="ratioRing">
+                <div class="ringInner">
+                  <b id="ratioValue">0.00</b>
+                  <span>ratio</span>
+                </div>
+              </div>
+
+              <div class="miniRows">
+                <div class="mini">
+                  <div class="l"><span class="swatch s1"></span>Done</div>
+                  <div class="b" id="doneValue">0</div>
+                </div>
+                <div class="mini">
+                  <div class="l"><span class="swatch s2"></span>Received</div>
+                  <div class="b" id="receivedValue">0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card box">
+            <div id="xpTimeline" class="xp-card">
+              <h3>Cumulative XP Over Time</h3>
+
+              <svg id="xpSvg" width="600" height="240" viewBox="0 0 600 240">
+                <defs>
+                  <linearGradient id="xpGradient" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#ff7bb7" />
+                    <stop offset="50%" stop-color="#9a7dff" />
+                    <stop offset="100%" stop-color="#6aa9ff" />
+                  </linearGradient>
+                </defs>
+
+                <!-- axes -->
+                <line id="yAxis" />
+                <line id="xAxis" />
+
+                <!-- axis labels -->
+                <g id="xLabels"></g>
+                <g id="yLabels"></g>
+
+                <!-- data -->
+                <polyline
+                  id="xpLine"
+                  fill="none"
+                  stroke="url(#xpGradient)"
+                  stroke-width="3"
+                />
+                <g id="xpPoints"></g>
+              </svg>
+            </div>
+
+          </div>
+        </div>
+        <div class="card box">
+          <div class="skill">
+            <h3 class="glow-text">Skills you gained over the time!</h3>
+            <div id="skillsChart"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/invoke.js"></script>
+    <script src="/js/charts.js"></script>
+    <script src="/js/profile.js"></script>
+  </body>
+</html>
