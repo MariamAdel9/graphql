@@ -102,8 +102,8 @@ async function audits() {
 
     const ratio = received ? done / received : 0;
 
-    document.getElementById("doneValue").textContent = formatSize(done);
-    document.getElementById("receivedValue").textContent = formatSize(received);
+    document.getElementById("doneValue").textContent = done;
+    document.getElementById("receivedValue").textContent = received;
 
     document.getElementById("ratioValue").textContent = ratio.toFixed(2);
 
@@ -399,4 +399,5 @@ function formatSize(bytes) {
   }
   return (bytes / 1024).toFixed(2) + " KB";
 }
+
 
