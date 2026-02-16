@@ -85,7 +85,7 @@ async function audits() {
   try {
     const data = await query(`
       query {
-        transaction(where: { path: { _like: "/bahrain/bh-module/%" } }) {
+        transaction {
           type
           amount
         }
@@ -399,3 +399,4 @@ function formatSize(bytes) {
   }
   return (bytes / 1024).toFixed(2) + " KB";
 }
+
