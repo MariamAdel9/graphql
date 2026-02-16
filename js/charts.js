@@ -28,7 +28,7 @@ async function testPaths() {
       path: t.path,
       skill: t.type,
       amount: t.amount,
-    }))
+    })),
   );
 
   console.log(
@@ -37,7 +37,7 @@ async function testPaths() {
       path: p.path,
       grade: p.grade,
       date: p.createdAt,
-    }))
+    })),
   );
 }
 
@@ -67,7 +67,7 @@ async function chart() {
   // calc the sum of xp through all paths
   const totalXp = data.transaction.reduce((sum, t) => sum + t.amount, 0);
   document.getElementById("totalXp").textContent = `Your total xp ${formatXP(
-    totalXp
+    totalXp,
   )}`;
 
   //check the result table to filter through the passes and fails , including all the paths
@@ -77,15 +77,14 @@ async function chart() {
   const passTotal = pass.length;
   const failTotal = fail.length;
 
-  document.getElementById(
-    "passFail"
-  ).textContent = `Pass/fail ratio: ${passTotal} / ${failTotal}`;
+  document.getElementById("passFail").textContent =
+    `Pass/fail ratio: ${passTotal} / ${failTotal}`;
 }
 async function audits() {
   try {
     const data = await query(`
       query {
-        transaction(where: { path: { _like: "/bahrain/bh-module/%" } }) {
+        transaction {
           type
           amount
         }
@@ -102,8 +101,8 @@ async function audits() {
 
     const ratio = received ? done / received : 0;
 
-    document.getElementById("doneValue").textContent = formatSize(done);
-    document.getElementById("receivedValue").textContent = formatSize(received);
+    document.getElementById("doneValue").textContent = done;
+    document.getElementById("receivedValue").textContent = received;
 
     document.getElementById("ratioValue").textContent = ratio.toFixed(2);
 
@@ -344,7 +343,7 @@ async function renderXpTimeline() {
   coords.forEach((c) => {
     const circle = document.createElementNS(
       "http://www.w3.org/2000/svg",
-      "circle"
+      "circle",
     );
 
     circle.setAttribute("cx", c.x);
