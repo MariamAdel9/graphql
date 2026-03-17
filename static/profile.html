@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -14,7 +14,7 @@
         </div>
 
         <div class="chips">
-          <p class="glow-text" style="text-transform: uppercase">
+          <p class="sk-title" style="text-transform: uppercase">
             Since you joined Rebbot !
           </p>
           <div class="chip" id="totalXp"><span class="dot"></span> ...</div>
@@ -23,82 +23,68 @@
         </div>
       </div>
 
+      <!-- row 1: audit ratio + skills side by side -->
       <div class="row">
-        <!-- <div class="hero-card">mariam</div> -->
-
-        <div class="col">
-          <div class="card box" id="auditWidget">
-            <h3 class="glow-text">Audit Ratio</h3>
-
-            <div class="ringWrap">
-              <div class="ring" id="ratioRing">
-                <div class="ringInner">
-                  <b id="ratioValue">0.00</b>
-                  <span>ratio</span>
-                </div>
-              </div>
-
-              <div class="miniRows">
-                <div class="mini">
-                  <div class="l"><span class="swatch s1"></span>Done</div>
-                  <div class="b" id="doneValue">0</div>
-                </div>
-                <div class="mini">
-                  <div class="l"><span class="swatch s2"></span>Received</div>
-                  <div class="b" id="receivedValue">0</div>
-                </div>
+        <div class="card box" id="auditWidget">
+          <span id="sk-title">Audit Ratio</span>
+          <div class="ringWrap">
+            <div class="ring" id="ratioRing">
+              <div class="ringInner">
+                <b id="ratioValue">0.00</b>
+                <span>ratio</span>
               </div>
             </div>
-          </div>
-
-          <div class="card box">
-            <div id="xpTimeline" class="xp-card">
-              <h3>Cumulative XP Over Time</h3>
-
-              <svg id="xpSvg" width="600" height="240" viewBox="0 0 600 240">
-                <defs>
-                  <linearGradient id="xpGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stop-color="#ff7bb7" />
-                    <stop offset="50%" stop-color="#9a7dff" />
-                    <stop offset="100%" stop-color="#6aa9ff" />
-                  </linearGradient>
-                </defs>
-
-                <!-- axes -->
-                <line id="yAxis" />
-                <line id="xAxis" />
-
-                <!-- axis labels -->
-                <g id="xLabels"></g>
-                <g id="yLabels"></g>
-
-                <!-- data -->
-                <polyline
-                  id="xpLine"
-                  fill="none"
-                  stroke="url(#xpGradient)"
-                  stroke-width="3"
-                />
-                <g id="xpPoints"></g>
-              </svg>
+            <div class="miniRows">
+              <div class="mini">
+                <div class="l"><span class="swatch s1"></span>Done</div>
+                <div class="b" id="doneValue">0</div>
+              </div>
+              <div class="mini">
+                <div class="l"><span class="swatch s2"></span>Received</div>
+                <div class="b" id="receivedValue">0</div>
+              </div>
             </div>
-
           </div>
         </div>
-        <div class="card box">
-          <div class="skill">
-            <h3 class="glow-text">Skills you gained over the time!</h3>
-            <div id="skillsChart"></div>
+
+        <div class="card box" id="skillsChart"></div>
+      </div>
+
+      <!-- row 2: xp timeline full width -->
+      <div class="row">
+        <div class="card box" style="flex: 1">
+          <div id="xpTimeline" class="xp-card">
+            <h3>Cumulative XP Over Time</h3>
+            <svg id="xpSvg" width="600" height="240" viewBox="0 0 600 240">
+              <defs>
+                <linearGradient id="xpGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#ff7bb7" />
+                  <stop offset="50%" stop-color="#9a7dff" />
+                  <stop offset="100%" stop-color="#6aa9ff" />
+                </linearGradient>
+              </defs>
+              <line id="yAxis" />
+              <line id="xAxis" />
+              <g id="xLabels"></g>
+              <g id="yLabels"></g>
+              <polyline
+                id="xpLine"
+                fill="none"
+                stroke="url(#xpGradient)"
+                stroke-width="3"
+              />
+              <g id="xpPoints"></g>
+            </svg>
           </div>
         </div>
       </div>
 
     </div>
 
-
     <script src="/js/auth.js"></script>
     <script src="/js/invoke.js"></script>
     <script src="/js/charts.js"></script>
     <script src="/js/profile.js"></script>
+    <script>requireAuth();</script>
   </body>
 </html>

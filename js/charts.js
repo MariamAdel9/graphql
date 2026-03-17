@@ -118,7 +118,6 @@ async function audits() {
     console.error(err);
   }
 }
-
 async function renderSkillsRadarModule250() {
   const el = document.getElementById("skillsChart");
   if (!el) return;
@@ -147,74 +146,141 @@ async function renderSkillsRadarModule250() {
 
     const skills = Object.entries(totals)
       .filter(([, v]) => v > 0)
-      .sort((a, b) => b[1] - a[1]);
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8); 
 
     if (!skills.length) {
       el.innerHTML = "<p>No skills data</p>";
       return;
     }
 
-    const size = 500;
-    const center = size / 2;
-    const maxValue = Math.max(...skills.map(([, v]) => v));
-    const maxRadius = 70;
+    const maxVal = skills[0][1];
+    const fmt = (v) => (v >= 1000 ? (v / 1000).toFixed(1) + "k" : v);
 
-    const angleStep = (Math.PI * 2) / skills.length;
+   const rows = skills
+     .map(([skill, val], i) => {
+       const pct = Math.round((val / maxVal) * 100);
+       return `
+      <div class="sk-row" style="animation-delay:${i * 40}ms">
+        <span class="sk-label" title="${skill}">${skill}</span>
+        <div class="sk-track">
+          <div class="sk-fill${i < 3 ? " top" : ""}" style="width:${pct}% !important"></div>
+        </div>
+        <span class="sk-val">${fmt(val)}</span>
+      </div>`;
+     })
+     .join("");
 
-    const bubbles = skills
-      .map(([skill, value], i) => {
-        const angle = i * angleStep;
-        const orbit = 140;
-        const cx = center + orbit * Math.cos(angle);
-        const cy = center + orbit * Math.sin(angle);
+el.innerHTML = `
+  <div id="sk-inner">
+    <div id="sk-head">
+      <span id="sk-title">top skills</span>
+    </div>
+    <div id="sk-list">${rows}</div>
+  </div>
 
-        const r = Math.max(18, (value / maxValue) * maxRadius);
-
-        return `
-        <g>
-          <circle
-            cx="${cx}"
-            cy="${cy}"
-            r="${r}"
-            fill="rgba(170,140,255,0.65)"
-            stroke-width="2"
-          />
-          <text
-            x="${cx}"
-            y="${cy}"
-            text-anchor="middle"
-            dominant-baseline="middle"
-            fill="#fff"
-            font-size="13"
-            font-weight="600"
-          >
-            ${skill.toUpperCase()}
-          </text>
-          <text
-            x="${cx}"
-            y="${cy + r + 16}"
-            text-anchor="middle"
-            fill="#aaa"
-            font-size="11"
-          >
-           
-          </text>
-        </g>
-      `;
-      })
-      .join("");
-
-    el.innerHTML = `
-    
-      <svg width="${size}" height="${size}">
-        ${bubbles}
-      </svg>
-    `;
+`;
   } catch (err) {
     console.error(err);
-    el.innerHTML = "<p style='color:red'>Skills data unavailable</p>";
+    el.innerHTML = "<p style='color:#e57f7f'>Skills data unavailable</p>";
   }
 }
+// async function renderSkillsRadarModule250() {
+//   const el = document.getElementById("skillsChart");
+//   if (!el) return;
+
+//   try {
+//     const data = await query(`
+//       query {
+//         transaction(
+//           where: {
+//             path: { _like: "/bahrain/bh-module/%" }
+//             type: { _like: "skill_%" }
+//           }
+//           limit: 1000
+//         ) {
+//           type
+//           amount
+//         }
+//       }
+//     `);
+
+//     const totals = {};
+//     data.transaction.forEach((t) => {
+//       const skill = t.type.replace("skill_", "");
+//       totals[skill] = (totals[skill] || 0) + t.amount;
+//     });
+
+//     const skills = Object.entries(totals)
+//       .filter(([, v]) => v > 0)
+//       .sort((a, b) => b[1] - a[1]);
+
+//     if (!skills.length) {
+//       el.innerHTML = "<p>No skills data</p>";
+//       return;
+//     }
+
+//     const size = 500;
+//     const center = size / 2;
+//     const maxValue = Math.max(...skills.map(([, v]) => v));
+//     const maxRadius = 70;
+
+//     const angleStep = (Math.PI * 2) / skills.length;
+
+//     const bubbles = skills
+//       .map(([skill, value], i) => {
+//         const angle = i * angleStep;
+//         const orbit = 140;
+//         const cx = center + orbit * Math.cos(angle);
+//         const cy = center + orbit * Math.sin(angle);
+
+//         const r = Math.max(18, (value / maxValue) * maxRadius);
+
+//         return `
+//         <g>
+//           <circle
+//             cx="${cx}"
+//             cy="${cy}"
+//             r="${r}"
+//             fill="rgba(170,140,255,0.65)"
+//             stroke-width="2"
+//           />
+//           <text
+//             x="${cx}"
+//             y="${cy}"
+//             text-anchor="middle"
+//             dominant-baseline="middle"
+//             fill="#fff"
+//             font-size="13"
+//             font-weight="600"
+//           >
+//             ${skill.toUpperCase()}
+//           </text>
+//           <text
+//             x="${cx}"
+//             y="${cy + r + 16}"
+//             text-anchor="middle"
+//             fill="#aaa"
+//             font-size="11"
+//           >
+
+//           </text>
+//         </g>
+//       `;
+//       })
+//       .join("");
+
+//     el.innerHTML = `
+
+//       <svg width="${size}" height="${size}">
+//         ${bubbles}
+//       </svg>
+//     `;
+//   } catch (err) {
+//     console.error(err);
+//     el.innerHTML = "<p style='color:red'>Skills data unavailable</p>";
+//   }
+// }
 
 const tooltip = document.createElement("div");
 tooltip.id = "xpTooltip";
@@ -233,7 +299,6 @@ async function renderXpTimeline() {
 
   if (!svg || !line || !pointsGroup || !tooltip) return;
 
-  /* ================= FETCH DATA ================= */
   const data = await query(`
     query {
       transaction(
@@ -256,7 +321,6 @@ async function renderXpTimeline() {
 
   if (!data.transaction.length) return;
 
-  /* ================= PROCESS DATA ================= */
   let cumulative = 0;
   const points = data.transaction.map((t) => {
     cumulative += t.amount;
@@ -268,12 +332,16 @@ async function renderXpTimeline() {
     };
   });
 
-  /* ================= CHART METRICS ================= */
-  const width = 600;
-  const height = 240;
+ 
   const padding = 50;
   const maxXp = Math.max(...points.map((p) => p.xp)) || 1;
   const ySteps = 4;
+
+  const svgEl = document.getElementById("xpSvg");
+  const width = svgEl.parentElement.clientWidth || 1000;
+  const height = 240;
+
+  svgEl.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
   const denom = Math.max(points.length - 1, 1);
 
@@ -285,7 +353,6 @@ async function renderXpTimeline() {
     return { x, y, ...p };
   });
 
-  /* ================= AXES ================= */
   yAxis.setAttribute("x1", padding);
   yAxis.setAttribute("y1", padding);
   yAxis.setAttribute("x2", padding);
@@ -296,7 +363,6 @@ async function renderXpTimeline() {
   xAxis.setAttribute("x2", width - padding);
   xAxis.setAttribute("y2", height - padding);
 
-  /* ================= Y AXIS LABELS (XP) ================= */
   yLabelsGroup.innerHTML = "";
 
   for (let i = 0; i <= ySteps; i++) {
@@ -315,7 +381,6 @@ async function renderXpTimeline() {
     yLabelsGroup.appendChild(text);
   }
 
-  /* ================= X AXIS LABELS (DATES) ================= */
   xLabelsGroup.innerHTML = "";
   const labelStep = Math.ceil(coords.length / 6);
 
@@ -334,10 +399,8 @@ async function renderXpTimeline() {
     xLabelsGroup.appendChild(text);
   });
 
-  /* ================= LINE ================= */
   line.setAttribute("points", coords.map((c) => `${c.x},${c.y}`).join(" "));
 
-  /* ================= POINTS + ANCHORED TOOLTIP ================= */
   pointsGroup.innerHTML = "";
 
   coords.forEach((c) => {
@@ -362,7 +425,6 @@ async function renderXpTimeline() {
 
       tooltip.classList.add("show");
 
-      // wait one frame so tooltip has dimensions
       requestAnimationFrame(() => {
         const dotRect = circle.getBoundingClientRect();
         const tipRect = tooltip.getBoundingClientRect();
@@ -370,13 +432,12 @@ async function renderXpTimeline() {
         let top = dotRect.top - tipRect.height - 12;
         let left = dotRect.left + dotRect.width / 2 - tipRect.width / 2;
 
-        // keep inside viewport
         if (left < 8) left = 8;
         if (left + tipRect.width > window.innerWidth - 8) {
           left = window.innerWidth - tipRect.width - 8;
         }
         if (top < 8) {
-          top = dotRect.bottom + 12; // fallback below if no space
+          top = dotRect.bottom + 12; 
         }
 
         tooltip.style.top = `${top}px`;
@@ -392,9 +453,3 @@ async function renderXpTimeline() {
   });
 }
 
-function formatSize(bytes) {
-  if (bytes >= 1024 * 1024) {
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-  }
-  return (bytes / 1024).toFixed(2) + " KB";
-}
